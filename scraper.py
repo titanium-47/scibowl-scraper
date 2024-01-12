@@ -33,20 +33,33 @@ df = pd.DataFrame(columns=["Round", "Question", "Category", "Type"])
 
 for i in range(1, len(pdf_links)):
     print(i)
-    if i == 52:
+
+    if i == 44:
         continue
+
     reader = PdfReader(f'{QUESTION_FOLDER}{i}.pdf')
     text = ""
     for page in reader.pages:
         text += page.extract_text()
-    num = re.search(r'\d', text)[0]
+
+    num = re.search(r'\b\d+\b', text)[0]
     tossups = re.findall(r'TOSS\s?-?\s?UP(.*?)(?=\s*BONUS)', text, re.DOTALL)
     bonuses = re.findall(r'BONUS(.*?)(?=\s*TOSS-UP)', text, re.DOTALL)
-
+    
     for tossup in tossups:
         category = re.findall(r'\d+\)\s*([A-Z][A-Z\s]+)', tossup)
         if category == []:
             category = re.findall(r'\d+\)\s*([A-Za-z\s-]+)\s*–', tossup)
-        category = category[0][:-1].strip()
-        df.loc[len(df)] = [num, tossup.strip(), category.lower(), "toss-up"]
+        if category != []:
+            category = category[0][:-1].strip()
+            df.loc[len(df)] = [num, tossup.strip(), category.lower(), "toss-up"]
+
+    for bonus in bonuses:
+        category = re.findall(r'\d+\)\s*([A-Z][A-Z\s]+)', bonus)
+        if category == []:
+            category = re.findall(r'\d+\)\s*([A-Za-z\s-]+)\s*–', bonus)
+        if category != []:
+            category = category[0][:-1].strip()
+            df.loc[len(df)] = [num, bonus.strip(), category.lower(), "bonus"]
+
 df.to_csv(QUESTION_PATH)

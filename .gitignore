@@ -3,3 +3,5 @@ venv
 questions
 .vscode
 questions.csv
+custom_qs.csv
+custom_qs.txt
