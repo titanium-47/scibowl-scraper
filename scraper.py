@@ -50,6 +50,11 @@ for i in range(1, len(pdf_links)):
         category = re.findall(r'\d+\)\s*([A-Z][A-Z\s]+)', tossup)
         if category == []:
             category = re.findall(r'\d+\)\s*([A-Za-z\s-]+)\s*–', tossup)
+        tossup = tossup.strip()
+        if tossup[1] == ")":
+            tossup = tossup[2:]
+        elif tossup[2] == ")":
+            tossup = tossup[3:]
         if category != []:
             category = category[0][:-1].strip()
             df.loc[len(df)] = [num, tossup.strip(), category.lower(), "toss-up"]
@@ -58,6 +63,11 @@ for i in range(1, len(pdf_links)):
         category = re.findall(r'\d+\)\s*([A-Z][A-Z\s]+)', bonus)
         if category == []:
             category = re.findall(r'\d+\)\s*([A-Za-z\s-]+)\s*–', bonus)
+        bonus = bonus.strip()
+        if bonus[1] == ")":
+            bonus = bonus[2:]
+        elif bonus[2] == ")":
+            bonus = bonus[3:]
         if category != []:
             category = category[0][:-1].strip()
             df.loc[len(df)] = [num, bonus.strip(), category.lower(), "bonus"]
